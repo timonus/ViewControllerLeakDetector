@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)tj_enableLeakDetection;
 
-@property (nonatomic, nullable, setter=tj_setCustomLifecycleExtendingParentViewController:) UIViewController *tj_customLifecycleExtendingParentViewController;
+@property (nonatomic, nullable, weak, setter=tj_setCustomLifecycleExtendingParentViewController:) UIViewController *tj_customLifecycleExtendingParentViewController;
 
 + (void)tj_setViewControllerPossiblyLeakedBlock:(void (^)(NSOrderedSet<UIViewController *> *))block;
 
