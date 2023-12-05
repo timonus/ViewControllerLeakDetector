@@ -22,8 +22,8 @@ By default this code logs using `NSLog` when a view controller is thought to be 
 
 ## Ok, what do I do next?
 
-The address of leaked view controllers is logged when a potential leak is detected. You can find the view controller in question using the `Debug Memory Graph` tool, then you should be able to hunt down what causing the leak.
+The address of leaked view controllers is logged when a potential leak is detected. You can find the view controller in question using the `Debug Memory Graph` tool, then you should be able to hunt down what's causing the leak.
 
 ## Notes
 
-There's a [view controller leak in UIKit in iOS 16 when using `prefersGrabberVisible`](https://mastodon.social/@timonus/110294950761155548). If your app uses `prefersGrabberVisible` you may want to only enabled the leak detector on iOS 17+ [where it was fixed](https://mastodon.social/@timonus/110516713068987111).
+There's a [view controller leak in UIKit in iOS 16 when using `prefersGrabberVisible`](https://mastodon.social/@timonus/110294950761155548). If your app uses `prefersGrabberVisible` you may want to only enable the leak detector on iOS 17+ [where it was fixed](https://mastodon.social/@timonus/110516713068987111).
