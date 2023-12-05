@@ -106,7 +106,11 @@ static NSHashTable *_tjvcld_trackedViewControllers;
             [viewControllers addObject:parent];
         } else {
             // If we have no "parent", our view isn't in a window, and we aren't a "root view controller" of any window we're probably being leaked.
-            if (!viewController.view.window && ![rootViewControllers containsObject:viewController]) {
+            if (!viewController.view.window
+                && ![rootViewControllers containsObject:viewController]
+                // Internal classes that seem to hang around related to keyboard input.
+                && ![NSStringFromClass([viewController class]) isEqualToString:@"UISystemInputAssistantViewController"]
+                && ![NSStringFromClass([viewController class]) isEqualToString:@"UICompatibilityInputViewController"]) {
                 [possiblyLeakedViewControllers addObject:viewController];
             }
         }
