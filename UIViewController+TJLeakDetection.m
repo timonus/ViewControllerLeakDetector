@@ -82,7 +82,9 @@ static NSHashTable *_tjvcld_trackedViewControllers;
     for (UIScene *scene in [[UIApplication sharedApplication] connectedScenes]) {
         if ([scene isKindOfClass:[UIWindowScene class]]) {
             for (UIWindow *window in [(UIWindowScene *)scene windows]) {
-                [rootViewControllers addObject:window.rootViewController];
+                if (window.rootViewController) {
+                    [rootViewControllers addObject:window.rootViewController];
+                }
             }
         }
     }
