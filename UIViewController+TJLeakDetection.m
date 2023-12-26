@@ -79,12 +79,20 @@ static NSHashTable *_tjvcld_trackedViewControllers;
     NSMutableOrderedSet<UIViewController *> *const viewControllers = [NSMutableOrderedSet orderedSetWithArray:_tjvcld_trackedViewControllers.allObjects];
     
     NSMutableArray<UIViewController *> *const rootViewControllers = [NSMutableArray new];
-    for (UIScene *scene in [[UIApplication sharedApplication] connectedScenes]) {
-        if ([scene isKindOfClass:[UIWindowScene class]]) {
-            for (UIWindow *window in [(UIWindowScene *)scene windows]) {
-                if (window.rootViewController) {
-                    [rootViewControllers addObject:window.rootViewController];
+    if (@available(iOS 13.0, *)) {
+        for (UIScene *scene in [[UIApplication sharedApplication] connectedScenes]) {
+            if ([scene isKindOfClass:[UIWindowScene class]]) {
+                for (UIWindow *window in [(UIWindowScene *)scene windows]) {
+                    if (window.rootViewController) {
+                        [rootViewControllers addObject:window.rootViewController];
+                    }
                 }
+            }
+        }
+    } else {
+        for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
+            if (window.rootViewController) {
+                [rootViewControllers addObject:window.rootViewController];
             }
         }
     }
