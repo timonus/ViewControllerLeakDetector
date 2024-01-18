@@ -120,7 +120,8 @@ static NSHashTable *_tjvcld_trackedViewControllers;
                 && ![rootViewControllers containsObject:viewController]
                 // Internal classes that seem to hang around related to keyboard input.
                 && ![NSStringFromClass([viewController class]) isEqualToString:@"UISystemInputAssistantViewController"]
-                && ![NSStringFromClass([viewController class]) isEqualToString:@"UICompatibilityInputViewController"]) {
+                && ![NSStringFromClass([viewController class]) isEqualToString:@"UICompatibilityInputViewController"]
+                && ![NSStringFromClass([viewController class]) isEqualToString:@"_UICursorAccessoryViewController"]) {
                 [possiblyLeakedViewControllers addObject:viewController];
             }
         }
