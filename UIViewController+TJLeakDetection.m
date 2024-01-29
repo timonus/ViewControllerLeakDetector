@@ -69,8 +69,8 @@ static NSHashTable *_tjvcld_trackedViewControllers;
 
 - (void)_tjvcld_viewDidDisappear:(BOOL)animated
 {
-    [NSObject cancelPreviousPerformRequestsWithTarget:[self class] selector:@selector(_tjvcld_auditAllViewControllerLeaks) object:nil];
-    [[self class] performSelector:@selector(_tjvcld_auditAllViewControllerLeaks) withObject:nil afterDelay:1.5];
+    [NSObject cancelPreviousPerformRequestsWithTarget:[UIViewController class] selector:@selector(_tjvcld_auditAllViewControllerLeaks) object:nil];
+    [[UIViewController class] performSelector:@selector(_tjvcld_auditAllViewControllerLeaks) withObject:nil afterDelay:1.5];
     
     [self _tjvcld_viewDidDisappear:animated];
 }
