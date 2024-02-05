@@ -79,7 +79,9 @@ static NSHashTable *_tjvcld_trackedViewControllers;
     NSMutableOrderedSet<UIViewController *> *const viewControllers = [NSMutableOrderedSet orderedSetWithArray:_tjvcld_trackedViewControllers.allObjects];
     
     NSMutableArray<UIViewController *> *const rootViewControllers = [NSMutableArray new];
+#if !defined(__IPHONE_13_0) || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_13_0
     if (@available(iOS 13.0, *)) {
+#endif
         for (UIScene *scene in [[UIApplication sharedApplication] connectedScenes]) {
             if ([scene isKindOfClass:[UIWindowScene class]]) {
                 for (UIWindow *window in [(UIWindowScene *)scene windows]) {
@@ -89,6 +91,7 @@ static NSHashTable *_tjvcld_trackedViewControllers;
                 }
             }
         }
+#if !defined(__IPHONE_13_0) || __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_13_0
     } else {
         for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
             if (window.rootViewController) {
@@ -96,6 +99,7 @@ static NSHashTable *_tjvcld_trackedViewControllers;
             }
         }
     }
+#endif
     
     NSMutableOrderedSet<UIViewController *> *const possiblyLeakedViewControllers = [NSMutableOrderedSet new];
     
