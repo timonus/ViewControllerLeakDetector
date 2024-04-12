@@ -118,13 +118,16 @@ static NSHashTable *_tjvcld_trackedViewControllers;
             [viewControllers addObject:parent];
         } else {
             // If we have no "parent", our view isn't in a window, and we aren't a "root view controller" of any window we're probably being leaked.
+            NSString *const className = NSStringFromClass([viewController class]);
             if (!viewController.view.window
                 && ![rootViewControllers containsObject:viewController]
                 // Internal classes that seem to hang around related to keyboard input.
-                && ![NSStringFromClass([viewController class]) isEqualToString:@"UISystemInputAssistantViewController"]
-                && ![NSStringFromClass([viewController class]) isEqualToString:@"UICompatibilityInputViewController"]
-                && ![NSStringFromClass([viewController class]) isEqualToString:@"_UICursorAccessoryViewController"]
-                && ![NSStringFromClass([viewController class]) hasPrefix:@"FLEX"]) {
+                && ![className isEqualToString:@"UISystemInputAssistantViewController"]
+                && ![className isEqualToString:@"UICompatibilityInputViewController"]
+                && ![className isEqualToString:@"_UICursorAccessoryViewController"]
+                && ![className isEqualToString:@"TUIEmojiSearchInputViewController"]
+                && ![className isEqualToString:@"UIPredictionViewController"]
+                && ![className hasPrefix:@"FLEX"]) {
                 [possiblyLeakedViewControllers addObject:viewController];
             }
         }
