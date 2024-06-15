@@ -108,6 +108,9 @@ static NSHashTable *_tjvcld_trackedViewControllers;
         parent = parent ?: viewController.navigationController;
         parent = parent ?: viewController.presentingViewController;
         parent = parent ?: viewController.tabBarController;
+        if (!parent && [viewController isKindOfClass:[UISearchController class]] && [[(UISearchController *)viewController searchResultsUpdater] isKindOfClass:[UIViewController class]]) {
+            parent = (UIViewController *)[(UISearchController *)viewController searchResultsUpdater];
+        }
         parent = parent ?: viewController.tj_customLifecycleExtendingParentViewController;
         
         if (!parent && [viewController isKindOfClass:[UISearchController class]] && [[(UISearchController *)viewController delegate] isKindOfClass:[UIViewController class]]) {
