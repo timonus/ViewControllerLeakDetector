@@ -24,20 +24,14 @@ static void _tjvcld_swizzle(Class class, SEL originalSelector, SEL swizzledSelec
 
 @implementation UIViewController (TJLeakDetection)
 
-NSMapTable *_customLifecycleExtendingParentViewControllers;
-
 - (void)tj_setCustomLifecycleExtendingParentViewController:(UIViewController *)viewController
 {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _customLifecycleExtendingParentViewControllers = [NSMapTable strongToWeakObjectsMapTable];
-    });
-    [_customLifecycleExtendingParentViewControllers setObject:viewController forKey:self];
+    objc_setAssociatedObject(self, @selector(tj_customLifecycleExtendingParentViewController), [NSValue valueWithNonretainedObject:viewController], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (UIViewController *)tj_customLifecycleExtendingParentViewController
 {
-    return [_customLifecycleExtendingParentViewControllers objectForKey:self];
+    return [objc_getAssociatedObject(self, @selector(tj_customLifecycleExtendingParentViewController)) nonretainedObjectValue];
 }
 
 static void (^_tjvcld_viewControllerPossiblyLeakedBlock)(NSOrderedSet<UIViewController *> *);
