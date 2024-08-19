@@ -22,16 +22,35 @@ static void _tjvcld_swizzle(Class class, SEL originalSelector, SEL swizzledSelec
     }
 }
 
+@interface TJWeakViewControllerWrapper : NSObject
+
+@property (nonatomic, weak, readonly) UIViewController *viewController;
+
+@end
+
+
+@implementation TJWeakViewControllerWrapper
+
+- (instancetype)initWithViewController:(UIViewController *)viewController
+{
+    if (self = [super init]) {
+        _viewController = viewController;
+    }
+    return self;
+}
+
+@end
+
 @implementation UIViewController (TJLeakDetection)
 
 - (void)tj_setCustomLifecycleExtendingParentViewController:(UIViewController *)viewController
 {
-    objc_setAssociatedObject(self, @selector(tj_customLifecycleExtendingParentViewController), [NSValue valueWithNonretainedObject:viewController], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(tj_customLifecycleExtendingParentViewController), [[TJWeakViewControllerWrapper alloc] initWithViewController:viewController], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (UIViewController *)tj_customLifecycleExtendingParentViewController
 {
-    return [objc_getAssociatedObject(self, @selector(tj_customLifecycleExtendingParentViewController)) nonretainedObjectValue];
+    return [(TJWeakViewControllerWrapper *)objc_getAssociatedObject(self, @selector(tj_customLifecycleExtendingParentViewController)) viewController];
 }
 
 static void (^_tjvcld_viewControllerPossiblyLeakedBlock)(NSOrderedSet<UIViewController *> *);
