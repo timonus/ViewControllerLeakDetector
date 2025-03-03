@@ -22,7 +22,7 @@ static void _tjvcld_swizzle(Class class, SEL originalSelector, SEL swizzledSelec
     }
 }
 
-@interface TJWeakViewControllerWrapper : NSObject
+static @interface TJWeakViewControllerWrapper : NSObject
 
 @property (nonatomic, weak, readonly) UIViewController *viewController;
 
