@@ -26,4 +26,5 @@ The address of leaked view controllers is logged when a potential leak is detect
 
 ## Notes
 
-There's a [view controller leak in UIKit in iOS 16 when using `prefersGrabberVisible`](https://mastodon.social/@timonus/110294950761155548). If your app uses `prefersGrabberVisible` you may want to only enable the leak detector on iOS 17+ [where it was fixed](https://mastodon.social/@timonus/110516713068987111).
+- ~~There's a [view controller leak in UIKit in iOS 16 when using `prefersGrabberVisible`](https://mastodon.social/@timonus/110294950761155548). If your app uses `prefersGrabberVisible` you may want to only enable the leak detector on iOS 17+ [where it was fixed](https://mastodon.social/@timonus/110516713068987111).~~ This has been resolved.
+- `UIActivityViewController` seems to leak when `UIDesignRequiresCompatibility` is set to `true` on iOS 26+ (FB20452837, [detail thread](https://mastodon.social/@timonus/115293402251434191)).
