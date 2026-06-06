@@ -60,7 +60,21 @@ static void (^_tjvcld_viewControllerPossiblyLeakedBlock)(NSOrderedSet<UIViewCont
     _tjvcld_viewControllerPossiblyLeakedBlock = block;
 }
 
+static void (^_tjvcld_viewControllerPossiblyPrematurelyLoadedBlock)(UIViewController *);
+
++ (void)tj_setViewControllerPossiblyPrematurelyLoadedBlock:(void (^)(UIViewController *))block
+{
+    _tjvcld_viewControllerPossiblyPrematurelyLoadedBlock = block;
+}
+
 static NSHashTable *_tjvcld_trackedViewControllers;
+
+static void _tjvcld_swizzleViewDidAppear(void) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _tjvcld_swizzle([UIViewController class], @selector(viewDidAppear:), @selector(_tjvcld_viewDidAppear:));
+    });
+}
 
 + (void)tj_enableLeakDetection
 {
@@ -74,12 +88,41 @@ static NSHashTable *_tjvcld_trackedViewControllers;
         };
         
         _tjvcld_swizzle([UIViewController class], @selector(viewDidDisappear:), @selector(_tjvcld_viewDidDisappear:));
-        _tjvcld_swizzle([UIViewController class], @selector(viewDidAppear:), @selector(_tjvcld_viewDidAppear:));
+        _tjvcld_swizzleViewDidAppear();
     });
+}
+
++ (void)tj_enablePrematureLoadDetection
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _tjvcld_viewControllerPossiblyPrematurelyLoadedBlock = ^(UIViewController *viewController) {
+            NSLog(@"[POSSIBLE PREMATURE VIEW CONTROLLER LOAD] %p %@", viewController, NSStringFromClass([viewController class]));
+        };
+        
+        _tjvcld_swizzle([UIViewController class], @selector(viewDidLoad), @selector(_tjvcld_viewDidLoad));
+        _tjvcld_swizzleViewDidAppear();
+    });
+}
+
+static char *const kPrematureLoadDetectionTimerKey = "_tjvcld_timer";
+
+- (void)_tjvcld_viewDidLoad
+{
+    [self _tjvcld_viewDidLoad];
+    
+    __weak UIViewController *weakSelf = self;
+    objc_setAssociatedObject(self, kPrematureLoadDetectionTimerKey, [NSTimer scheduledTimerWithTimeInterval:2.0 repeats:NO block:^(NSTimer * _Nonnull timer) {
+        __strong UIViewController *strongSelf = weakSelf;
+        if (strongSelf && !strongSelf.presentedViewController) {
+            _tjvcld_viewControllerPossiblyPrematurelyLoadedBlock(strongSelf);
+        }
+    }], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (void)_tjvcld_viewDidAppear:(BOOL)animated
 {
+    [(NSTimer *)objc_getAssociatedObject(self, kPrematureLoadDetectionTimerKey) invalidate];
     [_tjvcld_trackedViewControllers addObject:self];
     [self _tjvcld_viewDidAppear:animated];
 }

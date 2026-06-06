@@ -11,11 +11,19 @@ NS_ASSUME_NONNULL_BEGIN
 // Somewhat automatic view controller leak detection based on this excellent blog post: https://medium.com/thumbtack-engineering/detecting-leaky-view-controllers-7f3a15dfeee1
 @interface UIViewController (TJLeakDetection)
 
+#pragma mark - Leak Detection
+
 + (void)tj_enableLeakDetection;
 
 @property (nonatomic, nullable, weak, setter=tj_setCustomLifecycleExtendingParentViewController:) UIViewController *tj_customLifecycleExtendingParentViewController;
 
 + (void)tj_setViewControllerPossiblyLeakedBlock:(void (^)(NSOrderedSet<UIViewController *> *))block;
+
+#pragma mark - Premature Load Detection
+
++ (void)tj_enablePrematureLoadDetection;
+
++ (void)tj_setViewControllerPossiblyPrematurelyLoadedBlock:(void (^)(UIViewController *))block;
 
 @end
 
