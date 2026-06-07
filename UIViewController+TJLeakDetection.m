@@ -111,13 +111,16 @@ static char *const kPrematureLoadDetectionTimerKey = "_tjvcld_timer";
 {
     [self _tjvcld_viewDidLoad];
     
-    __weak UIViewController *weakSelf = self;
-    objc_setAssociatedObject(self, kPrematureLoadDetectionTimerKey, [NSTimer scheduledTimerWithTimeInterval:2.0 repeats:NO block:^(NSTimer * _Nonnull timer) {
-        __strong UIViewController *strongSelf = weakSelf;
-        if (strongSelf && !strongSelf.presentedViewController) {
-            _tjvcld_viewControllerPossiblyPrematurelyLoadedBlock(strongSelf);
-        }
-    }], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    NSString *className = NSStringFromClass([self class]);
+    if (![className isEqualToString:@"UIEditingOverlayViewController"]) {
+        __weak UIViewController *weakSelf = self;
+        objc_setAssociatedObject(self, kPrematureLoadDetectionTimerKey, [NSTimer scheduledTimerWithTimeInterval:2.0 repeats:NO block:^(NSTimer * _Nonnull timer) {
+            __strong UIViewController *strongSelf = weakSelf;
+            if (strongSelf && !strongSelf.presentedViewController) {
+                _tjvcld_viewControllerPossiblyPrematurelyLoadedBlock(strongSelf);
+            }
+        }], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
 }
 
 - (void)_tjvcld_viewDidAppear:(BOOL)animated
