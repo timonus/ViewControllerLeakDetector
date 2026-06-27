@@ -112,7 +112,9 @@ static char *const kPrematureLoadDetectionTimerKey = "_tjvcld_timer";
     [self _tjvcld_viewDidLoad];
     
     NSString *className = NSStringFromClass([self class]);
-    if (![className isEqualToString:@"UIEditingOverlayViewController"]) {
+    if (![className isEqualToString:@"UIEditingOverlayViewController"] &&
+        ![className isEqualToString:@"_UISceneHostingViewController"] &&
+        ![className isEqualToString:@"SFBrowserRemoteViewController"]) {
         __weak UIViewController *weakSelf = self;
         objc_setAssociatedObject(self, kPrematureLoadDetectionTimerKey, [NSTimer scheduledTimerWithTimeInterval:2.0 repeats:NO block:^(NSTimer * _Nonnull timer) {
             __strong UIViewController *strongSelf = weakSelf;
