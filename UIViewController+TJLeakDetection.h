@@ -25,6 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)tj_setViewControllerPossiblyPrematurelyLoadedBlock:(void (^)(UIViewController *))block;
 
+@property (nonatomic, setter=tj_setPrematureLoadDetectionDisabled:) BOOL tj_prematureLoadDetectionDisabled;
+
 @end
 
 NS_ASSUME_NONNULL_END

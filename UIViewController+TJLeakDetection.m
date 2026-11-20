@@ -115,7 +115,8 @@ static char *const kPrematureLoadDetectionTimerKey = "_tjvcld_timer";
     if (![className isEqualToString:@"UIEditingOverlayViewController"] &&
         ![className isEqualToString:@"_UISceneHostingViewController"] &&
         ![className isEqualToString:@"SFBrowserRemoteViewController"] &&
-        ![className isEqualToString:@"_UIAlertControllerTextFieldViewController"]) {
+        ![className isEqualToString:@"_UIAlertControllerTextFieldViewController"] &&
+        ![self tj_prematureLoadDetectionDisabled]) {
         __weak UIViewController *weakSelf = self;
         objc_setAssociatedObject(self, kPrematureLoadDetectionTimerKey, [NSTimer scheduledTimerWithTimeInterval:2.0 repeats:NO block:^(NSTimer * _Nonnull timer) {
             __strong UIViewController *strongSelf = weakSelf;
@@ -207,6 +208,16 @@ static char *const kPrematureLoadDetectionTimerKey = "_tjvcld_timer";
     if (possiblyLeakedViewControllers.count) {
         _tjvcld_viewControllerPossiblyLeakedBlock(possiblyLeakedViewControllers);
     }
+}
+
+- (void)tj_setPrematureLoadDetectionDisabled:(BOOL)prematureLoadDetectionDisabled
+{
+    objc_setAssociatedObject(self, @selector(tj_prematureLoadDetectionDisabled), @(prematureLoadDetectionDisabled), OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (BOOL)tj_prematureLoadDetectionDisabled
+{
+    return [objc_getAssociatedObject(self, @selector(tj_prematureLoadDetectionDisabled)) boolValue];
 }
 
 @end
